@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>目標管理RPG &amp; 街づくり</title>
+<style>
+:root{--bg-color:#1a1a24;--card-bg:#252533;--accent-color:#ff2a6d;--gold:#ffd700;--cyan:#00f6ff;--text-color:#fff;--text-sub:#a0a0b8;--border-color:#3a3a4d;--mat-wood:#8b5a2b;--mat-stone:#8c92ac;--mat-iron:#607d8b;--mat-glass:#84ffff}
+*{box-sizing:border-box;margin:0;padding:0;font-family:sans-serif}
+body{background:var(--bg-color);color:var(--text-color);max-width:480px;margin:0 auto;display:flex;flex-direction:column;min-height:100vh;position:relative}
+header{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-bottom:2px solid var(--border-color);background:rgba(0,0,0,.3)}
+h1{font-size:15px;color:var(--gold)}
+.reset-top-btn{background:none;border:1px solid #ff5555;color:#ff5555;font-size:10px;padding:4px 8px;border-radius:4px;cursor:pointer}
+.content-area{flex:1;overflow-y:auto;padding:12px;padding-bottom:90px}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.card{background:var(--card-bg);border:2px solid var(--border-color);border-radius:8px;padding:12px;margin-bottom:12px}
+.global-status{display:flex;justify-content:space-between;font-size:12px;font-weight:bold;margin-bottom:8px}
+.stat-box{background:rgba(0,0,0,.4);padding:6px 10px;border-radius:6px}
+.coin-text{color:var(--gold)}
+.exp-bar-container{background:#111;height:14px;border-radius:7px;overflow:hidden;border:1px solid #444;position:relative;margin-bottom:12px}
+.exp-bar-fill{background:linear-gradient(90deg,var(--cyan),var(--accent-color));height:100%;width:0%;transition:width .3s ease}
+.exp-text{position:absolute;top:0;left:0;width:100%;font-size:9px;line-height:14px;text-align:center;color:#fff}
+.btn{background:var(--card-bg);border:1px solid var(--border-color);color:var(--text-color);padding:8px;border-radius:6px;font-size:12px;font-weight:bold;cursor:pointer}
+.btn:active{transform:scale(0.98)}
+.btn-primary{background:var(--accent-color);color:#fff;border:none}
+.btn-action{color:var(--cyan);border-color:var(--cyan);width:100%}
+.action-row{margin-bottom:12px}
+.input-group{display:flex;gap:6px;margin-bottom:8px}
+input[type="text"],select{background:#15151f;border:1px solid var(--border-color);color:#fff;padding:8px;border-radius:4px;font-size:14px;outline:none;flex:1}
+.quest-list{list-style:none}
+.quest-item{background:var(--card-bg);border:1px solid var(--border-color);border-radius:6px;padding:10px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.quest-item.completed{opacity:.5;text-decoration:line-through}
+.quest-left{display:flex;align-items:center;gap:8px;flex:1;cursor:pointer;font-size:13px}
+.badge-lvl{font-size:10px;padding:2px 5px;border-radius:3px;font-weight:bold;background:#0288d1;color:#fff}
+.btn-del{background:none;border:none;color:#ff5555;font-size:16px;cursor:pointer;padding:2px 8px}
+.market-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mat-card{background:rgba(0,0,0,.4);padding:10px;border-radius:6px;text-align:center;border:1px solid var(--border-color)}
+.mat-icon{width:30px;height:30px;display:inline-block;border-radius:4px;margin-bottom:4px}
+.mat-wood{background:var(--mat-wood)}
+.mat-stone{background:var(--mat-stone)}
+.mat-iron{background:var(--mat-iron)}
+.mat-glass{background:rgba(132,255,255,.4);border:1px solid var(--mat-glass)}
+.mat-count{font-size:16px;font-weight:bold;color:var(--gold)}
+.city-view{height:180px;background:#232330;border-radius:8px;border:2px solid var(--border-color);display:flex;justify-content:center;align-items:flex-end;padding-bottom:20px;position:relative;margin-bottom:16px}
+.building{position:relative}
+.b-lv0{width:0;height:0;border-left:25px solid transparent;border-right:25px solid transparent;border-bottom:35px solid #795548}
+.b-lv1{width:50px;height:40px;background:var(--mat-wood)}
+.b-lv2{width:70px;height:50px;background:var(--mat-stone)}
+.b-lv3{width:100px;height:70px;background:var(--mat-stone);border-top:4px solid var(--mat-iron)}
+.b-lv4{width:130px;height:90px;background:var(--mat-stone);border:2px solid var(--mat-iron)}
+.req-list{display:flex;gap:8px;justify-content:center;margin-bottom:12px}
+.req-item{font-size:11px;padding:4px 6px;background:#111;border-radius:4px;border:1px solid #444}
+.log-list{font-size:11px;color:var(--text-sub)}
+.log-item{padding:6px 0;border-bottom:1px dashed var(--border-color)}
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;display:flex;background:#15151f;border-top:2px solid var(--border-color);z-index:999}
+.nav-btn{flex:1;padding:10px 0;text-align:center;font-size:12px;color:var(--text-sub);cursor:pointer;border:none;background:none}
+.nav-btn.active{color:var(--cyan);background:rgba(0,246,255,.1);border-top:2px solid var(--cyan)}
+.modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.8);display:none;justify-content:center;align-items:center;z-index:2000}
+.modal-content{background:var(--card-bg);border:2px solid var(--gold);border-radius:8px;padding:16px;width:85%;max-width:320px;text-align:center}
+</style>
+</head>
+<body>
+<header>
+  <h1>⚔️ QUEST &amp; CITY 🏘️</h1>
+  <button class="reset-top-btn" onclick="resetAllData()">🔄 リセット</button>
+</header>
+
+<div style="padding:12px 12px 0">
+  <div class="global-status">
+    <div class="stat-box">Lv. <span id="val-lv">1</span></div>
+    <div class="stat-box" style="color:#ff5722" id="val-streak">🔥 0日連続</div>
+    <div class="stat-box coin-text">🪙 <span id="val-coin">0</span></div>
+  </div>
+  <div class="exp-bar-container">
+    <div class="exp-bar-fill" id="val-exp-bar"></div>
+    <div class="exp-text"><span id="val-exp">0</span> / <span id="val-nextexp">100</span> EXP</div>
+  </div>
+</div>
+
+<div class="content-area">
+  <!-- タブ1: クエスト -->
+  <div id="tab-quests" class="tab-content active">
+    <div class="action-row">
+      <button class="btn btn-action" onclick="pickRandomQuest()">🎲 ランダムで選ぶ</button>
+    </div>
+    <div class="card">
+      <div class="input-group">
+        <input type="text" id="goal-input" placeholder="新しいクエストを入力">
+        <select id="goal-level" style="max-width:90px">
+          <option value="1">Lv.1</option>
+          <option value="3">Lv.3</option>
+          <option value="5" selected>Lv.5</option>
+          <option value="7">Lv.7</option>
+          <option value="10">Lv.10</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <select id="goal-repeat">
+          <option value="once">単発</option>
+          <option value="daily">日課</option>
+          <option value="weekly">週課</option>
+        </select>
+        <button class="btn btn-primary" onclick="addGoal()" style="flex:1">受注する</button>
+      </div>
+    </div>
+    <ul id="quest-list" class="quest-list"></ul>
+  </div>
+
+  <!-- タブ2: 街づくり -->
+  <div id="tab-city" class="tab-content">
+    <h2 style="font-size:14px;text-align:center;color:var(--cyan);margin-bottom:8px" id="city-title">野営地</h2>
+    <div class="city-view"><div id="building-render" class="building b-lv0"></div></div>
+    <div class="card" style="text-align:center">
+      <div id="upgrade-section">
+        <div style="font-size:12px;margin-bottom:8px">次の増改築に必要な資材</div>
+        <div class="req-list" id="upgrade-reqs"></div>
+        <button class="btn btn-primary" onclick="upgradeCity()" style="width:100%">建築・増改築を実行！</button>
+      </div>
+      <div id="max-level-msg" style="display:none;color:var(--gold);font-weight:bold">🎉 最高の建物に到達しました！</div>
+    </div>
+  </div>
+
+  <!-- タブ3: 市場 -->
+  <div id="tab-market" class="tab-content">
+    <div class="card" style="text-align:center"><span class="coin-text">所持コイン: 🪙 <span id="market-coin">0</span></span></div>
+    <div class="market-grid" id="market-grid"></div>
+  </div>
+
+  <!-- タブ4: 記録 -->
+  <div id="tab-records" class="tab-content">
+    <div class="card">
+      <h3 style="font-size:14px;margin-bottom:8px;color:var(--cyan)">冒険の記録</h3>
+      <div class="log-list" id="log-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- 下部ナビゲーション -->
+<nav class="bottom-nav">
+  <button class="nav-btn active" onclick="switchTab('quests', this)">📜<br>クエスト</button>
+  <button class="nav-btn" onclick="switchTab('city', this)">🏘️<br>マイホーム</button>
+  <button class="nav-btn" onclick="switchTab('market', this)">🛒<br>市場</button>
+  <button class="nav-btn" onclick="switchTab('records', this)">📕<br>記録</button>
+</nav>
+
+<!-- モーダル -->
+<div id="modal" class="modal-overlay">
+  <div class="modal-content">
+    <div style="color:var(--gold);font-size:16px;font-weight:bold;margin-bottom:10px" id="modal-title">通知</div>
+    <div style="font-size:13px;margin-bottom:14px;line-height:1.4" id="modal-body"></div>
+    <button class="btn" style="width:100%" onclick="closeModal()">閉じる</button>
+  </div>
+</div>
+
+<script>
+// 定数
+var EXP_RATES = {1:10, 3:40, 5:100, 7:220, 10:600};
+var COIN_RATES = {1:5, 3:20, 5:50, 7:110, 10:300};
+var CITY_LEVELS = [
+  {name:"野営地（テント）", req:{wood:5, stone:0, iron:0, glass:0}, css:"b-lv0"},
+  {name:"木の小屋", req:{wood:20, stone:5, iron:0, glass:0}, css:"b-lv1"},
+  {name:"石造りの家", req:{wood:30, stone:30, iron:10, glass:0}, css:"b-lv2"},
+  {name:"立派な館", req:{wood:50, stone:60, iron:30, glass:10}, css:"b-lv3"},
+  {name:"荘厳な城郭", req:null, css:"b-lv4", isMax:true}
+];
+var MATERIALS = [
+  {key:'wood', name:'木材', price:10},
+  {key:'stone', name:'石材', price:25},
+  {key:'iron', name:'鉄材', price:50},
+  {key:'glass', name:'ガラス', price:100}
+];
+var buyQty = {wood:1, stone:1, iron:1, glass:1};
+
+var state = {
+  lv: 1, exp: 0, nextExp: 100, coins: 0, streak: 0, lastClearedDate: null,
+  materials: {wood:0, stone:0, iron:0, glass:0}, cityLevel: 0, goals: [], logs: []
+};
+
+// データの読み込み
+function loadData() {
+  try {
+    var raw = localStorage.getItem('rpg_city_data');
+    if (raw) {
+      var parsed = JSON.parse(raw);
+      if (parsed) state = parsed;
+    }
+  } catch(e) {}
+}
+
+// データの保存
+function saveData() {
+  try {
+    localStorage.setItem('rpg_city_data', JSON.stringify(state));
+  } catch(e) {}
+  renderAll();
+}
+
+// タブ切り替え
+function switchTab(tabId, btn) {
+  var tabs = document.querySelectorAll('.tab-content');
+  for (var i = 0; i < tabs.length; i++) {
+    tabs[i].style.display = 'none';
+    tabs[i].classList.remove('active');
+  }
+  var target = document.getElementById('tab-' + tabId);
+  if (target) {
+    target.style.display = 'block';
+    target.classList.add('active');
+  }
+  var btns = document.querySelectorAll('.nav-btn');
+  for (var j = 0; j < btns.length; j++) {
+    btns[j].classList.remove('active');
+  }
+  if (btn) btn.classList.add('active');
+}
+
+// クエスト追加
+function addGoal() {
+  var input = document.getElementById('goal-input');
+  var text = input ? input.value.trim() : '';
+  if (!text) return;
+
+  var levelEl = document.getElementById('goal-level');
+  var repeatEl = document.getElementById('goal-repeat');
+  var level = levelEl ? parseInt(levelEl.value) : 5;
+  var repeat = repeatEl ? repeatEl.value : 'once';
+
+  state.goals.push({
+    id: Date.now(),
+    text: text,
+    level: level,
+    exp: EXP_RATES[level] || 50,
+    coins: COIN_RATES[level] || 25,
+    repeat: repeat,
+    done: false
+  });
+
+  input.value = '';
+  saveData();
+}
+
+// クエスト達成
+function toggleGoal(id) {
+  for (var i = 0; i < state.goals.length; i++) {
+    if (state.goals[i].id === id) {
+      if (state.goals[i].done) return;
+      state.goals[i].done = true;
+      
+      state.exp += state.goals[i].exp;
+      state.coins += state.goals[i].coins;
+
+      while (state.exp >= state.nextExp) {
+        state.exp -= state.nextExp;
+        state.lv += 1;
+        state.nextExp = Math.floor(state.nextExp * 1.35);
+        addLog('レベル ' + state.lv + ' に上がった！');
+      }
+
+      showModal('🎯 クエスト達成！', '+' + state.goals[i].exp + ' EXP<br>+' + state.goals[i].coins + ' コイン獲得！');
+      saveData();
+      break;
+    }
+  }
+}
+
+// クエスト削除
+function deleteGoal(id) {
+  if (!confirm('このクエストを削除しますか？')) return;
+  state.goals = state.goals.filter(function(g) { return g.id !== id; });
+  saveData();
+}
+
+// ランダム抽選
+function pickRandomQuest() {
+  var active = state.goals.filter(function(g) { return !g.done; });
+  if (active.length === 0) {
+    showModal('🎲', '挑戦できる未完了クエストがありません。');
+    return;
+  }
+  var q = active[Math.floor(Math.random() * active.length)];
+  showModal('🎲 今日のピックアップ', '<b style="color:var(--cyan);font-size:16px">' + q.text + '</b><br><br>Lv.' + q.level + ' (+' + q.exp + 'EXP / +' + q.coins + '🪙)');
+}
+
+// 個数変更
+function changeQty(key, delta) {
+  var next = (buyQty[key] || 1) + delta;
+  if (next < 1 || next > 99) return;
+  buyQty[key] = next;
+  var elQty = document.getElementById('qty-' + key);
+  var elCost = document.getElementById('cost-' + key);
+  var m = MATERIALS.find(function(x){ return x.key === key; });
+  if (elQty) elQty.textContent = next;
+  if (elCost && m) elCost.textContent = next * m.price;
+}
+
+// 資材購入
+function buyMat(key) {
+  var m = MATERIALS.find(function(x){ return x.key === key; });
+  if (!m) return;
+  var qty = buyQty[key] || 1;
+  var cost = m.price * qty;
+
+  if (state.coins >= cost) {
+    state.coins -= cost;
+    state.materials[key] = (state.materials[key] || 0) + qty;
+    saveData();
+  } else {
+    showModal('❌ コイン不足', 'コインが足りません。');
+  }
+}
+
+// 街の増改築
+function upgradeCity() {
+  var current = CITY_LEVELS[state.cityLevel];
+  if (!current || current.isMax) return;
+  var req = current.req;
+  var m = state.materials;
+
+  if (m.wood >= req.wood && m.stone >= req.stone && m.iron >= req.iron && m.glass >= req.glass) {
+    m.wood -= req.wood;
+    m.stone -= req.stone;
+    m.iron -= req.iron;
+    m.glass -= req.glass;
+    state.cityLevel += 1;
+    var newCity = CITY_LEVELS[state.cityLevel];
+    addLog('建築完了：【' + newCity.name + '】が完成した！');
+    saveData();
+    showModal('🎉 建築完了！', '新しい建物【' + newCity.name + '】が完成しました！');
+  } else {
+    showModal('⚠️ 資材不足', '必要な資材が足りません。');
+  }
+}
+
+// ログ追加
+function addLog(msg) {
+  var d = new Date();
+  var dateStr = (d.getMonth() + 1) + '/' + d.getDate();
+  state.logs.unshift({date: dateStr, msg: msg});
+  if (state.logs.length > 30) state.logs.pop();
+}
+
+// モーダル
+function showModal(title, body) {
+  document.getElementById('modal-title').innerHTML = title;
+  document.getElementById('modal-body').innerHTML = body;
+  document.getElementById('modal').style.display = 'flex';
+}
+
+function closeModal() {
+  document.getElementById('modal').style.display = 'none';
+}
+
+// リセット
+function resetAllData() {
+  if (confirm('すべてのデータを初期化しますか？')) {
+    localStorage.clear();
+    state = {
+      lv: 1, exp: 0, nextExp: 100, coins: 0, streak: 0, lastClearedDate: null,
+      materials: {wood:0, stone:0, iron:0, glass:0}, cityLevel: 0, goals: [], logs: []
+    };
+    saveData();
+    location.reload();
+  }
+}
+
+// 全描画
+function renderAll() {
+  document.getElementById('val-lv').textContent = state.lv;
+  document.getElementById('val-coin').textContent = state.coins;
+  document.getElementById('val-exp').textContent = state.exp;
+  document.getElementById('val-nextexp').textContent = state.nextExp;
+  document.getElementById('val-streak').textContent = '🔥 ' + state.streak + '日連続';
+  document.getElementById('market-coin').textContent = state.coins;
+
+  var pct = Math.min(100, (state.exp / state.nextExp) * 100);
+  document.getElementById('val-exp-bar').style.width = pct + '%';
+
+  MATERIALS.forEach(function(m) {
+    var el = document.getElementById('count-' + m.key);
+    if (el) el.textContent = state.materials[m.key] || 0;
+  });
+
+  var list = document.getElementById('quest-list');
+  if (list) {
+    list.innerHTML = '';
+    state.goals.forEach(function(g) {
+      var li = document.createElement('li');
+      li.className = 'quest-item' + (g.done ? ' completed' : '');
+      var repText = g.repeat === 'daily' ? '[日課] ' : (g.repeat === 'weekly' ? '[週課] ' : '');
+      li.innerHTML = 
+        '<div class="quest-left" onclick="toggleGoal(' + g.id + ')">' +
+          '<span class="badge-lvl">Lv.' + g.level + '</span>' +
+          '<span>' + repText + g.text + '</span>' +
+        '</div>' +
+        '<button class="btn-del" onclick="deleteGoal(' + g.id + ')">✖</button>';
+      list.appendChild(li);
+    });
+  }
+
+  var curCity = CITY_LEVELS[state.cityLevel] || CITY_LEVELS[0];
+  document.getElementById('city-title').textContent = curCity.name;
+  var bRender = document.getElementById('building-render');
+  if (bRender) bRender.className = 'building ' + curCity.css;
+
+  if (curCity.isMax) {
+    document.getElementById('upgrade-section').style.display = 'none';
+    document.getElementById('max-level-msg').style.display = 'block';
+  } else {
+    document.getElementById('upgrade-section').style.display = 'block';
+    document.getElementById('max-level-msg').style.display = 'none';
+    var req = curCity.req;
+    var html = [];
+    var m = state.materials;
+    if(req.wood>0) html.push('<div class="req-item" style="color:' + (m.wood>=req.wood?'#4caf50':'#ff5555') + '">木:' + (m.wood||0) + '/' + req.wood + '</div>');
+    if(req.stone>0) html.push('<div class="req-item" style="color:' + (m.stone>=req.stone?'#4caf50':'#ff5555') + '">石:' + (m.stone||0) + '/' + req.stone + '</div>');
+    if(req.iron>0) html.push('<div class="req-item" style="color:' + (m.iron>=req.iron?'#4caf50':'#ff5555') + '">鉄:' + (m.iron||0) + '/' + req.iron + '</div>');
+    if(req.glass>0) html.push('<div class="req-item" style="color:' + (m.glass>=req.glass?'#4caf50':'#ff5555') + '">窓:' + (m.glass||0) + '/' + req.glass + '</div>');
+    document.getElementById('upgrade-reqs').innerHTML = html.join('');
+  }
+
+  var grid = document.getElementById('market-grid');
+  if (grid && grid.children.length === 0) {
+    MATERIALS.forEach(function(m) {
+      var card = document.createElement('div');
+      card.className = 'mat-card';
+      card.innerHTML = 
+        '<div class="mat-icon mat-' + m.key + '"></div>' +
+        '<div style="font-size:12px">' + m.name + '</div>' +
+        '<div class="mat-count" id="count-' + m.key + '">' + (state.materials[m.key] || 0) + '</div>' +
+        '<div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:6px">' +
+          '<button class="btn" onclick="changeQty(\'' + m.key + '\', -1)">−</button>' +
+          '<span id="qty-' + m.key + '" style="min-width:24px;font-weight:bold">1</span>' +
+          '<button class="btn" onclick="changeQty(\'' + m.key + '\', 1)">＋</button>' +
+        '</div>' +
+        '<button class="btn" style="width:100%;margin-top:6px" onclick="buyMat(\'' + m.key + '\')">買う: <span id="cost-' + m.key + '">' + m.price + '</span>🪙</button>';
+      grid.appendChild(card);
+    });
+  }
+
+  var logList = document.getElementById('log-list');
+  if (logList) {
+    logList.innerHTML = state.logs.map(function(l) {
+      return '<div class="log-item">[' + l.date + '] ' + l.msg + '</div>';
+    }).join('');
+  }
+}
+
+// 起動
+loadData();
+if (state.logs.length === 0) addLog("冒険と開拓の旅が始まった。");
+renderAll();
+</script>
+</body>
+</html>
