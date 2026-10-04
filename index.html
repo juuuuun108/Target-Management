@@ -3,7 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>目標管理RPG &amp; 街づくり</title>
+<title>QUEST &amp; CITY</title>
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="QUEST&amp;CITY">
+<link rel="apple-touch-icon" href="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='180' height='180'%3E%3Crect width='32' height='32' fill='%231a1a24' rx='6'/%3E%3Crect x='24' y='4' width='4' height='4' fill='%23ffd700'/%3E%3Crect x='6' y='6' width='2' height='2' fill='%2300f6ff'/%3E%3Crect x='18' y='8' width='2' height='2' fill='%23ffffff'/%3E%3Crect x='3' y='14' width='7' height='14' fill='%238b5a2b'/%3E%3Crect x='5' y='16' width='3' height='3' fill='%23ffd700'/%3E%3Crect x='11' y='10' width='10' height='18' fill='%238c92ac'/%3E%3Crect x='13' y='13' width='2' height='2' fill='%2300f6ff'/%3E%3Crect x='17' y='13' width='2' height='2' fill='%2300f6ff'/%3E%3Crect x='13' y='18' width='2' height='2' fill='%23ffd700'/%3E%3Crect x='17' y='18' width='2' height='2' fill='%2300f6ff'/%3E%3Crect x='22' y='16' width='7' height='12' fill='%23607d8b'/%3E%3Crect x='24' y='19' width='3' height='3' fill='%23ffd700'/%3E%3Cpolygon points='3,14 6.5,10 10,14' fill='%23ff2a6d'/%3E%3Crect x='0' y='28' width='32' height='4' fill='%233a3a4d'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32'%3E%3Crect width='32' height='32' fill='%231a1a24' rx='6'/%3E%3Crect x='24' y='4' width='4' height='4' fill='%23ffd700'/%3E%3Crect x='6' y='6' width='2' height='2' fill='%2300f6ff'/%3E%3Crect x='18' y='8' width='2' height='2' fill='%23ffffff'/%3E%3Crect x='3' y='14' width='7' height='14' fill='%238b5a2b'/%3E%3Crect x='5' y='16' width='3' height='3' fill='%23ffd700'/%3E%3Crect x='11' y='10' width='10' height='18' fill='%238c92ac'/%3E%3Crect x='13' y='13' width='2' height='2' fill='%2300f6ff'/%3E%3Crect x='17' y='13' width='2' height='2' fill='%2300f6ff'/%3E%3Crect x='13' y='18' width='2' height='2' fill='%23ffd700'/%3E%3Crect x='17' y='18' width='2' height='2' fill='%2300f6ff'/%3E%3Crect x='22' y='16' width='7' height='12' fill='%23607d8b'/%3E%3Crect x='24' y='19' width='3' height='3' fill='%23ffd700'/%3E%3Cpolygon points='3,14 6.5,10 10,14' fill='%23ff2a6d'/%3E%3Crect x='0' y='28' width='32' height='4' fill='%233a3a4d'/%3E%3C/svg%3E">
+
 <style>
 :root{--bg-color:#1a1a24;--card-bg:#252533;--accent-color:#ff2a6d;--gold:#ffd700;--cyan:#00f6ff;--text-color:#fff;--text-sub:#a0a0b8;--border-color:#3a3a4d;--mat-wood:#8b5a2b;--mat-stone:#8c92ac;--mat-iron:#607d8b;--mat-glass:#84ffff}
 *{box-sizing:border-box;margin:0;padding:0;font-family:sans-serif}
@@ -28,12 +35,19 @@ h1{font-size:15px;color:var(--gold)}
 .action-row{margin-bottom:12px}
 .input-group{display:flex;gap:6px;margin-bottom:8px}
 input[type="text"],select{background:#15151f;border:1px solid var(--border-color);color:#fff;padding:8px;border-radius:4px;font-size:14px;outline:none;flex:1}
+.filter-scroll{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:12px}
+.filter-btn{padding:6px 10px;border-radius:16px;font-size:11px;background:#15151f;border:1px solid var(--border-color);color:var(--text-sub);white-space:nowrap;cursor:pointer}
+.filter-btn.active{background:var(--accent-color);color:#fff;border-color:var(--accent-color)}
 .quest-list{list-style:none}
 .quest-item{background:var(--card-bg);border:1px solid var(--border-color);border-radius:6px;padding:10px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;gap:8px}
 .quest-item.completed{opacity:.5;text-decoration:line-through}
 .quest-left{display:flex;align-items:center;gap:8px;flex:1;cursor:pointer;font-size:13px}
 .badge-lvl{font-size:10px;padding:2px 5px;border-radius:3px;font-weight:bold;background:#0288d1;color:#fff}
+.badge-cat{font-size:10px;padding:2px 6px;border-radius:10px;color:#fff;font-weight:bold}
 .btn-del{background:none;border:none;color:#ff5555;font-size:16px;cursor:pointer;padding:2px 8px}
+.building-card{background:rgba(0,0,0,.3);border:1px solid var(--border-color);border-radius:8px;padding:12px;margin-bottom:12px}
+.building-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.building-title{font-weight:bold;font-size:14px;display:flex;align-items:center;gap:6px}
 .market-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .mat-card{background:rgba(0,0,0,.4);padding:10px;border-radius:6px;text-align:center;border:1px solid var(--border-color)}
 .mat-icon{width:30px;height:30px;display:inline-block;border-radius:4px;margin-bottom:4px}
@@ -42,15 +56,8 @@ input[type="text"],select{background:#15151f;border:1px solid var(--border-color
 .mat-iron{background:var(--mat-iron)}
 .mat-glass{background:rgba(132,255,255,.4);border:1px solid var(--mat-glass)}
 .mat-count{font-size:16px;font-weight:bold;color:var(--gold)}
-.city-view{height:180px;background:#232330;border-radius:8px;border:2px solid var(--border-color);display:flex;justify-content:center;align-items:flex-end;padding-bottom:20px;position:relative;margin-bottom:16px}
-.building{position:relative}
-.b-lv0{width:0;height:0;border-left:25px solid transparent;border-right:25px solid transparent;border-bottom:35px solid #795548}
-.b-lv1{width:50px;height:40px;background:var(--mat-wood)}
-.b-lv2{width:70px;height:50px;background:var(--mat-stone)}
-.b-lv3{width:100px;height:70px;background:var(--mat-stone);border-top:4px solid var(--mat-iron)}
-.b-lv4{width:130px;height:90px;background:var(--mat-stone);border:2px solid var(--mat-iron)}
-.req-list{display:flex;gap:8px;justify-content:center;margin-bottom:12px}
-.req-item{font-size:11px;padding:4px 6px;background:#111;border-radius:4px;border:1px solid #444}
+.req-list{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.req-item{font-size:10px;padding:3px 6px;background:#111;border-radius:4px;border:1px solid #444}
 .log-list{font-size:11px;color:var(--text-sub)}
 .log-item{padding:6px 0;border-bottom:1px dashed var(--border-color)}
 .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;display:flex;background:#15151f;border-top:2px solid var(--border-color);z-index:999}
@@ -81,44 +88,45 @@ input[type="text"],select{background:#15151f;border:1px solid var(--border-color
 <div class="content-area">
   <!-- タブ1: クエスト -->
   <div id="tab-quests" class="tab-content active">
+    <!-- カテゴリフィルター -->
+    <div class="filter-scroll" id="cat-filter-container"></div>
+
     <div class="action-row">
       <button class="btn btn-action" onclick="pickRandomQuest()">🎲 ランダムで選ぶ</button>
     </div>
+
     <div class="card">
       <div class="input-group">
         <input type="text" id="goal-input" placeholder="新しいクエストを入力">
-        <select id="goal-level" style="max-width:90px">
+      </div>
+      <div class="input-group">
+        <select id="goal-category"></select>
+        <select id="goal-level" style="max-width:85px">
           <option value="1">Lv.1</option>
           <option value="3">Lv.3</option>
           <option value="5" selected>Lv.5</option>
           <option value="7">Lv.7</option>
           <option value="10">Lv.10</option>
         </select>
-      </div>
-      <div class="input-group">
-        <select id="goal-repeat">
+        <select id="goal-repeat" style="max-width:85px">
           <option value="once">単発</option>
           <option value="daily">日課</option>
           <option value="weekly">週課</option>
         </select>
-        <button class="btn btn-primary" onclick="addGoal()" style="flex:1">受注する</button>
       </div>
+      <button class="btn btn-primary" onclick="addGoal()" style="width:100%">クエストを受注する</button>
     </div>
+
     <ul id="quest-list" class="quest-list"></ul>
   </div>
 
   <!-- タブ2: 街づくり -->
   <div id="tab-city" class="tab-content">
-    <h2 style="font-size:14px;text-align:center;color:var(--cyan);margin-bottom:8px" id="city-title">野営地</h2>
-    <div class="city-view"><div id="building-render" class="building b-lv0"></div></div>
-    <div class="card" style="text-align:center">
-      <div id="upgrade-section">
-        <div style="font-size:12px;margin-bottom:8px">次の増改築に必要な資材</div>
-        <div class="req-list" id="upgrade-reqs"></div>
-        <button class="btn btn-primary" onclick="upgradeCity()" style="width:100%">建築・増改築を実行！</button>
-      </div>
-      <div id="max-level-msg" style="display:none;color:var(--gold);font-weight:bold">🎉 最高の建物に到達しました！</div>
+    <div class="card" style="margin-bottom:12px;text-align:center">
+      <h2 style="font-size:14px;color:var(--cyan)">🏘️ マイホーム・建築一覧</h2>
+      <div style="font-size:11px;color:var(--text-sub);margin-top:4px">資材を使って集落を発展させよう</div>
     </div>
+    <div id="city-building-list"></div>
   </div>
 
   <!-- タブ3: 市場 -->
@@ -127,10 +135,20 @@ input[type="text"],select{background:#15151f;border:1px solid var(--border-color
     <div class="market-grid" id="market-grid"></div>
   </div>
 
-  <!-- タブ4: 記録 -->
+  <!-- タブ4: 記録・設定 -->
   <div id="tab-records" class="tab-content">
     <div class="card">
-      <h3 style="font-size:14px;margin-bottom:8px;color:var(--cyan)">冒険の記録</h3>
+      <h3 style="font-size:14px;margin-bottom:8px;color:var(--cyan)">⚙️ カテゴリ追加</h3>
+      <div class="input-group">
+        <input type="text" id="cat-name-input" placeholder="カテゴリ名（例: 趣味）">
+        <input type="text" id="cat-icon-input" placeholder="絵文字" style="max-width:60px" value="✨">
+        <input type="color" id="cat-color-input" value="#ff2a6d" style="width:40px;height:36px;border:none;background:none;cursor:pointer">
+      </div>
+      <button class="btn btn-primary" onclick="addCategory()" style="width:100%">新しいカテゴリを追加</button>
+    </div>
+
+    <div class="card">
+      <h3 style="font-size:14px;margin-bottom:8px;color:var(--cyan)">📕 冒険の記録</h3>
       <div class="log-list" id="log-list"></div>
     </div>
   </div>
@@ -141,10 +159,10 @@ input[type="text"],select{background:#15151f;border:1px solid var(--border-color
   <button class="nav-btn active" onclick="switchTab('quests', this)">📜<br>クエスト</button>
   <button class="nav-btn" onclick="switchTab('city', this)">🏘️<br>マイホーム</button>
   <button class="nav-btn" onclick="switchTab('market', this)">🛒<br>市場</button>
-  <button class="nav-btn" onclick="switchTab('records', this)">📕<br>記録</button>
+  <button class="nav-btn" onclick="switchTab('records', this)">⚙️<br>記録・設定</button>
 </nav>
 
-<!-- モーダル -->
+<!-- 通常通知モーダル -->
 <div id="modal" class="modal-overlay">
   <div class="modal-content">
     <div style="color:var(--gold);font-size:16px;font-weight:bold;margin-bottom:10px" id="modal-title">通知</div>
@@ -153,42 +171,118 @@ input[type="text"],select{background:#15151f;border:1px solid var(--border-color
   </div>
 </div>
 
+<!-- クエスト達成確認モーダル -->
+<div id="confirm-modal" class="modal-overlay">
+  <div class="modal-content">
+    <div style="color:var(--cyan);font-size:15px;font-weight:bold;margin-bottom:10px">🎯 クエスト達成の確認</div>
+    <div style="font-size:13px;margin-bottom:12px" id="confirm-task-text"></div>
+    <div style="font-size:11px;color:var(--gold);margin-bottom:16px">獲得: +<span id="confirm-exp">0</span> EXP / +<span id="confirm-coins">0</span> 🪙</div>
+    <div style="display:flex;gap:8px">
+      <button class="btn" style="flex:1" onclick="closeConfirmModal()">キャンセル</button>
+      <button class="btn btn-primary" style="flex:1" onclick="executeGoalToggle()">達成する！</button>
+    </div>
+  </div>
+</div>
+
 <script>
-// 定数
 var EXP_RATES = {1:10, 3:40, 5:100, 7:220, 10:600};
 var COIN_RATES = {1:5, 3:20, 5:50, 7:110, 10:300};
-var CITY_LEVELS = [
-  {name:"野営地（テント）", req:{wood:5, stone:0, iron:0, glass:0}, css:"b-lv0"},
-  {name:"木の小屋", req:{wood:20, stone:5, iron:0, glass:0}, css:"b-lv1"},
-  {name:"石造りの家", req:{wood:30, stone:30, iron:10, glass:0}, css:"b-lv2"},
-  {name:"立派な館", req:{wood:50, stone:60, iron:30, glass:10}, css:"b-lv3"},
-  {name:"荘厳な城郭", req:null, css:"b-lv4", isMax:true}
-];
+
+var BUILDINGS_DATA = {
+  castle: {
+    name: "主城", icon: "🏰",
+    levels: [
+      { name: "野営地（テント）", req: {wood: 5, stone: 0, iron: 0, glass: 0} },
+      { name: "木の館", req: {wood: 25, stone: 15, iron: 5, glass: 0} },
+      { name: "石造りの城", req: {wood: 40, stone: 50, iron: 20, glass: 5} },
+      { name: "荘厳な大城郭", req: null, isMax: true }
+    ]
+  },
+  windmill: {
+    name: "風車小屋", icon: "🌾",
+    levels: [
+      { name: "未建設", req: {wood: 15, stone: 5, iron: 0, glass: 0} },
+      { name: "小さな風車", req: {wood: 30, stone: 20, iron: 5, glass: 0} },
+      { name: "大風車と製粉所", req: null, isMax: true }
+    ]
+  },
+  forge: {
+    name: "鍛冶屋", icon: "⚒️",
+    levels: [
+      { name: "未建設", req: {wood: 10, stone: 20, iron: 15, glass: 0} },
+      { name: "熟練の鍛冶工房", req: {wood: 25, stone: 40, iron: 35, glass: 5} },
+      { name: "伝説の錬金工房", req: null, isMax: true }
+    ]
+  },
+  library: {
+    name: "大図書館", icon: "📖",
+    levels: [
+      { name: "未建設", req: {wood: 20, stone: 20, iron: 0, glass: 10} },
+      { name: "大図書館", req: {wood: 40, stone: 50, iron: 15, glass: 30} },
+      { name: "知恵の殿堂", req: null, isMax: true }
+    ]
+  },
+  cathedral: {
+    name: "大聖堂", icon: "⛪",
+    levels: [
+      { name: "未建設", req: {wood: 30, stone: 50, iron: 20, glass: 20} },
+      { name: "ガラスの大聖堂", req: {wood: 60, stone: 100, iron: 50, glass: 60} },
+      { name: "光の神殿", req: null, isMax: true }
+    ]
+  }
+};
+
 var MATERIALS = [
   {key:'wood', name:'木材', price:10},
   {key:'stone', name:'石材', price:25},
   {key:'iron', name:'鉄材', price:50},
   {key:'glass', name:'ガラス', price:100}
 ];
+
 var buyQty = {wood:1, stone:1, iron:1, glass:1};
+var pendingGoalId = null;
 
 var state = {
   lv: 1, exp: 0, nextExp: 100, coins: 0, streak: 0, lastClearedDate: null,
-  materials: {wood:0, stone:0, iron:0, glass:0}, cityLevel: 0, goals: [], logs: []
+  materials: {wood:0, stone:0, iron:0, glass:0},
+  buildings: {castle:0, windmill:0, forge:0, library:0, cathedral:0},
+  categories: [
+    {id:'cat_exercise', name:'運動', icon:'🏃', color:'#ff2a6d'},
+    {id:'cat_study', name:'勉強', icon:'📚', color:'#00f6ff'},
+    {id:'cat_life', name:'生活', icon:'🏠', color:'#ffd700'},
+    {id:'cat_other', name:'その他', icon:'✨', color:'#8c92ac'}
+  ],
+  selectedCatFilter: 'all',
+  goals: [], logs: []
 };
 
-// データの読み込み
 function loadData() {
   try {
     var raw = localStorage.getItem('rpg_city_data');
     if (raw) {
       var parsed = JSON.parse(raw);
-      if (parsed) state = parsed;
+      if (parsed) {
+        state = parsed;
+        if (!state.categories) {
+          state.categories = [
+            {id:'cat_exercise', name:'運動', icon:'🏃', color:'#ff2a6d'},
+            {id:'cat_study', name:'勉強', icon:'📚', color:'#00f6ff'},
+            {id:'cat_life', name:'生活', icon:'🏠', color:'#ffd700'},
+            {id:'cat_other', name:'その他', icon:'✨', color:'#8c92ac'}
+          ];
+        }
+        if (!state.selectedCatFilter) state.selectedCatFilter = 'all';
+        if (!state.buildings) {
+          state.buildings = {
+            castle: state.cityLevel || 0,
+            windmill: 0, forge: 0, library: 0, cathedral: 0
+          };
+        }
+      }
     }
   } catch(e) {}
 }
 
-// データの保存
 function saveData() {
   try {
     localStorage.setItem('rpg_city_data', JSON.stringify(state));
@@ -196,7 +290,6 @@ function saveData() {
   renderAll();
 }
 
-// タブ切り替え
 function switchTab(tabId, btn) {
   var tabs = document.querySelectorAll('.tab-content');
   for (var i = 0; i < tabs.length; i++) {
@@ -215,20 +308,48 @@ function switchTab(tabId, btn) {
   if (btn) btn.classList.add('active');
 }
 
-// クエスト追加
+function addCategory() {
+  var nameEl = document.getElementById('cat-name-input');
+  var iconEl = document.getElementById('cat-icon-input');
+  var colorEl = document.getElementById('cat-color-input');
+  var name = nameEl ? nameEl.value.trim() : '';
+  var icon = iconEl ? iconEl.value.trim() : '✨';
+  var color = colorEl ? colorEl.value : '#ff2a6d';
+
+  if (!name) return;
+  state.categories.push({
+    id: 'cat_' + Date.now(),
+    name: name,
+    icon: icon || '✨',
+    color: color
+  });
+  if (nameEl) nameEl.value = '';
+  saveData();
+  showModal('✅ カテゴリ追加', '新しいカテゴリ「' + icon + ' ' + name + '」を追加しました。');
+}
+
+function setCatFilter(catId) {
+  state.selectedCatFilter = catId;
+  renderAll();
+}
+
 function addGoal() {
   var input = document.getElementById('goal-input');
   var text = input ? input.value.trim() : '';
   if (!text) return;
 
+  var catEl = document.getElementById('goal-category');
   var levelEl = document.getElementById('goal-level');
   var repeatEl = document.getElementById('goal-repeat');
+
+  var catId = catEl ? catEl.value : 'cat_other';
   var level = levelEl ? parseInt(levelEl.value) : 5;
   var repeat = repeatEl ? repeatEl.value : 'once';
 
   state.goals.push({
     id: Date.now(),
     text: text,
+    catId: catId,
     level: level,
     exp: EXP_RATES[level] || 50,
     coins: COIN_RATES[level] || 25,
@@ -240,8 +361,26 @@ function addGoal() {
   saveData();
 }
 
-// クエスト達成
-function toggleGoal(id) {
+function requestGoalToggle(id) {
+  var g = state.goals.find(function(x) { return x.id === id; });
+  if (!g || g.done) return;
+  pendingGoalId = id;
+  document.getElementById('confirm-task-text').textContent = g.text;
+  document.getElementById('confirm-exp').textContent = g.exp;
+  document.getElementById('confirm-coins').textContent = g.coins;
+  document.getElementById('confirm-modal').style.display = 'flex';
+}
+
+function closeConfirmModal() {
+  document.getElementById('confirm-modal').style.display = 'none';
+  pendingGoalId = null;
+}
+
+function executeGoalToggle() {
+  if (pendingGoalId === null) return;
+  var id = pendingGoalId;
+  closeConfirmModal();
+
   for (var i = 0; i < state.goals.length; i++) {
     if (state.goals[i].id === id) {
       if (state.goals[i].done) return;
@@ -264,25 +403,26 @@ function toggleGoal(id) {
   }
 }
 
-// クエスト削除
 function deleteGoal(id) {
   if (!confirm('このクエストを削除しますか？')) return;
   state.goals = state.goals.filter(function(g) { return g.id !== id; });
   saveData();
 }
 
-// ランダム抽選
 function pickRandomQuest() {
-  var active = state.goals.filter(function(g) { return !g.done; });
+  var active = state.goals.filter(function(g) { 
+    if (g.done) return false;
+    if (state.selectedCatFilter !== 'all' && g.catId !== state.selectedCatFilter) return false;
+    return true;
+  });
   if (active.length === 0) {
-    showModal('🎲', '挑戦できる未完了クエストがありません。');
+    showModal('🎲', '対象の未完了クエストがありません。');
     return;
   }
   var q = active[Math.floor(Math.random() * active.length)];
   showModal('🎲 今日のピックアップ', '<b style="color:var(--cyan);font-size:16px">' + q.text + '</b><br><br>Lv.' + q.level + ' (+' + q.exp + 'EXP / +' + q.coins + '🪙)');
 }
 
-// 個数変更
 function changeQty(key, delta) {
   var next = (buyQty[key] || 1) + delta;
   if (next < 1 || next > 99) return;
@@ -291,56 +431,64 @@ function changeQty(key, delta) {
   var elCost = document.getElementById('cost-' + key);
   var m = MATERIALS.find(function(x){ return x.key === key; });
   if (elQty) elQty.textContent = next;
-  if (elCost && m) elCost.textContent = next * m.price;
-}
-
-// 資材購入
-function buyMat(key) {
-  var m = MATERIALS.find(function(x){ return x.key === key; });
-  if (!m) return;
+  if (elCost && m) elCost.textContent = 
+    function buyMaterial(key) {
+  var mat = MATERIALS.find(function(x) { return x.key === key; });
+  if (!mat) return;
   var qty = buyQty[key] || 1;
-  var cost = m.price * qty;
+  var totalCost = mat.price * qty;
 
-  if (state.coins >= cost) {
-    state.coins -= cost;
-    state.materials[key] = (state.materials[key] || 0) + qty;
-    saveData();
-  } else {
-    showModal('❌ コイン不足', 'コインが足りません。');
+  if (state.coins < totalCost) {
+    showModal('🪙 コイン不足', 'コインが足りません！（必要: ' + totalCost + ' 🪙 / 所持: ' + state.coins + ' 🪙）');
+    return;
   }
+
+  state.coins -= totalCost;
+  state.materials[key] = (state.materials[key] || 0) + qty;
+  addLog(mat.name + ' を ' + qty + ' 個購入しました。');
+  saveData();
+  showModal('🛒 購入完了', mat.name + ' を ' + qty + ' 個購入しました！');
 }
 
-// 街の増改築
-function upgradeCity() {
-  var current = CITY_LEVELS[state.cityLevel];
-  if (!current || current.isMax) return;
-  var req = current.req;
-  var m = state.materials;
+function upgradeBuilding(bKey) {
+  var bData = BUILDINGS_DATA[bKey];
+  if (!bData) return;
+  var currentLvl = state.buildings[bKey] || 0;
+  var nextLvlData = bData.levels[currentLvl];
 
-  if (m.wood >= req.wood && m.stone >= req.stone && m.iron >= req.iron && m.glass >= req.glass) {
-    m.wood -= req.wood;
-    m.stone -= req.stone;
-    m.iron -= req.iron;
-    m.glass -= req.glass;
-    state.cityLevel += 1;
-    var newCity = CITY_LEVELS[state.cityLevel];
-    addLog('建築完了：【' + newCity.name + '】が完成した！');
-    saveData();
-    showModal('🎉 建築完了！', '新しい建物【' + newCity.name + '】が完成しました！');
-  } else {
-    showModal('⚠️ 資材不足', '必要な資材が足りません。');
+  if (!nextLvlData || nextLvlData.isMax || !nextLvlData.req) {
+    showModal('🏰 建築', 'これ以上強化できません。');
+    return;
   }
+
+  var req = nextLvlData.req;
+  for (var m in req) {
+    if ((state.materials[m] || 0) < req[m]) {
+      showModal('🔨 資材不足', '建築に必要な資材が不足しています。');
+      return;
+    }
+  }
+
+  // 資材消費
+  for (var m in req) {
+    state.materials[m] -= req[m];
+  }
+
+  state.buildings[bKey] = currentLvl + 1;
+  var newLvlName = bData.levels[currentLvl].name;
+  addLog(bData.name + ' を「' + newLvlName + '」に強化しました！');
+  saveData();
+  showModal('🎉 建築成功！', bData.name + ' が「' + newLvlName + '」に発展しました！');
 }
 
-// ログ追加
 function addLog(msg) {
-  var d = new Date();
-  var dateStr = (d.getMonth() + 1) + '/' + d.getDate();
-  state.logs.unshift({date: dateStr, msg: msg});
+  var now = new Date();
+  var timeStr = (now.getMonth() + 1) + '/' + now.getDate() + ' ' +
+                ('0' + now.getHours()).slice(-2) + ':' + ('0' + now.getMinutes()).slice(-2);
+  state.logs.unshift({ time: timeStr, text: msg });
   if (state.logs.length > 30) state.logs.pop();
 }
 
-// モーダル
 function showModal(title, body) {
   document.getElementById('modal-title').innerHTML = title;
   document.getElementById('modal-body').innerHTML = body;
@@ -351,104 +499,167 @@ function closeModal() {
   document.getElementById('modal').style.display = 'none';
 }
 
-// リセット
 function resetAllData() {
-  if (confirm('すべてのデータを初期化しますか？')) {
-    localStorage.clear();
-    state = {
-      lv: 1, exp: 0, nextExp: 100, coins: 0, streak: 0, lastClearedDate: null,
-      materials: {wood:0, stone:0, iron:0, glass:0}, cityLevel: 0, goals: [], logs: []
-    };
-    saveData();
-    location.reload();
-  }
+  if (!confirm('全てのデータをリセットして最初から始めますか？この操作は取り消せません。')) return;
+  localStorage.removeItem('rpg_city_data');
+  location.reload();
 }
 
-// 全描画
 function renderAll() {
+  renderStats();
+  renderCategories();
+  renderQuests();
+  renderCity();
+  renderMarket();
+  renderLogs();
+}
+
+function renderStats() {
   document.getElementById('val-lv').textContent = state.lv;
-  document.getElementById('val-coin').textContent = state.coins;
-  document.getElementById('val-exp').textContent = state.exp;
-  document.getElementById('val-nextexp').textContent = state.nextExp;
   document.getElementById('val-streak').textContent = '🔥 ' + state.streak + '日連続';
+  document.getElementById('val-coin').textContent = state.coins;
   document.getElementById('market-coin').textContent = state.coins;
 
-  var pct = Math.min(100, (state.exp / state.nextExp) * 100);
+  document.getElementById('val-exp').textContent = state.exp;
+  document.getElementById('val-nextexp').textContent = state.nextExp;
+  var pct = Math.min(100, Math.floor((state.exp / state.nextExp) * 100));
   document.getElementById('val-exp-bar').style.width = pct + '%';
+}
 
-  MATERIALS.forEach(function(m) {
-    var el = document.getElementById('count-' + m.key);
-    if (el) el.textContent = state.materials[m.key] || 0;
-  });
-
-  var list = document.getElementById('quest-list');
-  if (list) {
-    list.innerHTML = '';
-    state.goals.forEach(function(g) {
-      var li = document.createElement('li');
-      li.className = 'quest-item' + (g.done ? ' completed' : '');
-      var repText = g.repeat === 'daily' ? '[日課] ' : (g.repeat === 'weekly' ? '[週課] ' : '');
-      li.innerHTML = 
-        '<div class="quest-left" onclick="toggleGoal(' + g.id + ')">' +
-          '<span class="badge-lvl">Lv.' + g.level + '</span>' +
-          '<span>' + repText + g.text + '</span>' +
-        '</div>' +
-        '<button class="btn-del" onclick="deleteGoal(' + g.id + ')">✖</button>';
-      list.appendChild(li);
-    });
-  }
-
-  var curCity = CITY_LEVELS[state.cityLevel] || CITY_LEVELS[0];
-  document.getElementById('city-title').textContent = curCity.name;
-  var bRender = document.getElementById('building-render');
-  if (bRender) bRender.className = 'building ' + curCity.css;
-
-  if (curCity.isMax) {
-    document.getElementById('upgrade-section').style.display = 'none';
-    document.getElementById('max-level-msg').style.display = 'block';
-  } else {
-    document.getElementById('upgrade-section').style.display = 'block';
-    document.getElementById('max-level-msg').style.display = 'none';
-    var req = curCity.req;
-    var html = [];
-    var m = state.materials;
-    if(req.wood>0) html.push('<div class="req-item" style="color:' + (m.wood>=req.wood?'#4caf50':'#ff5555') + '">木:' + (m.wood||0) + '/' + req.wood + '</div>');
-    if(req.stone>0) html.push('<div class="req-item" style="color:' + (m.stone>=req.stone?'#4caf50':'#ff5555') + '">石:' + (m.stone||0) + '/' + req.stone + '</div>');
-    if(req.iron>0) html.push('<div class="req-item" style="color:' + (m.iron>=req.iron?'#4caf50':'#ff5555') + '">鉄:' + (m.iron||0) + '/' + req.iron + '</div>');
-    if(req.glass>0) html.push('<div class="req-item" style="color:' + (m.glass>=req.glass?'#4caf50':'#ff5555') + '">窓:' + (m.glass||0) + '/' + req.glass + '</div>');
-    document.getElementById('upgrade-reqs').innerHTML = html.join('');
-  }
-
-  var grid = document.getElementById('market-grid');
-  if (grid && grid.children.length === 0) {
-    MATERIALS.forEach(function(m) {
-      var card = document.createElement('div');
-      card.className = 'mat-card';
-      card.innerHTML = 
-        '<div class="mat-icon mat-' + m.key + '"></div>' +
-        '<div style="font-size:12px">' + m.name + '</div>' +
-        '<div class="mat-count" id="count-' + m.key + '">' + (state.materials[m.key] || 0) + '</div>' +
-        '<div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:6px">' +
-          '<button class="btn" onclick="changeQty(\'' + m.key + '\', -1)">−</button>' +
-          '<span id="qty-' + m.key + '" style="min-width:24px;font-weight:bold">1</span>' +
-          '<button class="btn" onclick="changeQty(\'' + m.key + '\', 1)">＋</button>' +
-        '</div>' +
-        '<button class="btn" style="width:100%;margin-top:6px" onclick="buyMat(\'' + m.key + '\')">買う: <span id="cost-' + m.key + '">' + m.price + '</span>🪙</button>';
-      grid.appendChild(card);
-    });
-  }
-
-  var logList = document.getElementById('log-list');
-  if (logList) {
-    logList.innerHTML = state.logs.map(function(l) {
-      return '<div class="log-item">[' + l.date + '] ' + l.msg + '</div>';
+function renderCategories() {
+  var select = document.getElementById('goal-category');
+  if (select) {
+    var curVal = select.value;
+    select.innerHTML = state.categories.map(function(c) {
+      return '<option value="' + c.id + '">' + c.icon + ' ' + c.name + '</option>';
     }).join('');
+    if (curVal) select.value = curVal;
+  }
+
+  var filterContainer = document.getElementById('cat-filter-container');
+  if (filterContainer) {
+    var html = '<button class="filter-btn ' + (state.selectedCatFilter === 'all' ? 'active' : '') + '" onclick="setCatFilter(\'all\')">🌟 すべて</button>';
+    html += state.categories.map(function(c) {
+      var isActive = state.selectedCatFilter === c.id ? 'active' : '';
+      return '<button class="filter-btn ' + isActive + '" onclick="setCatFilter(\'' + c.id + '\')">' + c.icon + ' ' + c.name + '</button>';
+    }).join('');
+    filterContainer.innerHTML = html;
   }
 }
 
-// 起動
+function renderQuests() {
+  var list = document.getElementById('quest-list');
+  if (!list) return;
+
+  var filtered = state.goals.filter(function(g) {
+    if (state.selectedCatFilter === 'all') return true;
+    return g.catId === state.selectedCatFilter;
+  });
+
+  if (filtered.length === 0) {
+    list.innerHTML = '<li style="text-align:center;padding:20px;color:var(--text-sub);font-size:12px">クエストはありません</li>';
+    return;
+  }
+
+  list.innerHTML = filtered.map(function(g) {
+    var cat = state.categories.find(function(c) { return c.id === g.catId; }) || { name: 'その他', icon: '✨', color: '#8c92ac' };
+    var doneClass = g.done ? 'completed' : '';
+    var repeatBadge = g.repeat === 'daily' ? ' 🔄日課' : (g.repeat === 'weekly' ? ' 📅週課' : '');
+
+    return '<li class="quest-item ' + doneClass + '">' +
+      '<div class="quest-left" onclick="requestGoalToggle(' + g.id + ')">' +
+        '<span>' + (g.done ? '✅' : '🔲') + '</span>' +
+        '<span class="badge-cat" style="background:' + cat.color + '">' + cat.icon + ' ' + cat.name + '</span>' +
+        '<span class="badge-lvl">Lv.' + g.level + '</span>' +
+        '<span>' + g.text + repeatBadge + '</span>' +
+      '</div>' +
+      '<button class="btn-del" onclick="deleteGoal(' + g.id + ')">🗑️</button>' +
+    '</li>';
+  }).join('');
+}
+
+function renderCity() {
+  var container = document.getElementById('city-building-list');
+  if (!container) return;
+
+  var html = '';
+  for (var bKey in BUILDINGS_DATA) {
+    var bData = BUILDINGS_DATA[bKey];
+    var currentLvl = state.buildings[bKey] || 0;
+    var currentName = (currentLvl === 0) ? "未建設" : bData.levels[currentLvl - 1].name;
+    var nextLvlData = bData.levels[currentLvl];
+
+    html += '<div class="building-card">';
+    html += '<div class="building-header">';
+    html += '<div class="building-title"><span>' + bData.icon + '</span><span>' + bData.name + '</span> <span style="font-size:11px;color:var(--cyan)">(' + currentName + ')</span></div>';
+    html += '</div>';
+
+    if (nextLvlData && !nextLvlData.isMax) {
+      html += '<div style="font-size:11px;color:var(--text-sub);margin-bottom:6px">次段階: <b>' + nextLvlData.name + '</b></div>';
+      html += '<div class="req-list">';
+      var req = nextLvlData.req;
+      var canBuild = true;
+
+      var matNames = {wood:'木材', stone:'石材', iron:'鉄材', glass:'ガラス'};
+      for (var m in req) {
+        var has = state.materials[m] || 0;
+        var need = req[m];
+        var isShort = has < need;
+        if (isShort) canBuild = false;
+        var colorStyle = isShort ? 'color:#ff5555' : 'color:#00ff88';
+        html += '<div class="req-item">' + matNames[m] + ': <span style="' + colorStyle + '">' + has + '/' + need + '</span></div>';
+      }
+      html += '</div>';
+      html += '<button class="btn ' + (canBuild ? 'btn-primary' : '') + '" style="width:100%;margin-top:6px" onclick="upgradeBuilding(\'' + bKey + '\')" ' + (canBuild ? '' : 'disabled') + '>' + (currentLvl === 0 ? '建築する' : '強化する') + '</button>';
+    } else {
+      html += '<div style="font-size:11px;color:var(--gold);margin-top:4px">✨ 最高レベルに達しています</div>';
+    }
+
+    html += '</div>';
+  }
+
+  container.innerHTML = html;
+}
+
+function renderMarket() {
+  var grid = document.getElementById('market-grid');
+  if (!grid) return;
+
+  grid.innerHTML = MATERIALS.map(function(m) {
+    var qty = buyQty[m.key] || 1;
+    var myQty = state.materials[m.key] || 0;
+
+    return '<div class="mat-card">' +
+      '<div class="mat-icon mat-' + m.key + '"></div>' +
+      '<div style="font-size:13px;font-weight:bold">' + m.name + '</div>' +
+      '<div style="font-size:11px;color:var(--text-sub)">所持: <span class="mat-count">' + myQty + '</span></div>' +
+      '<div style="font-size:11px;color:var(--gold);margin:6px 0">単価: ' + m.price + '🪙</div>' +
+      '<div class="input-group" style="justify-content:center;align-items:center;margin-bottom:6px">' +
+        '<button class="btn" onclick="changeQty(\'' + m.key + '\', -1)">-</button>' +
+        '<span style="font-size:12px;width:30px" id="qty-' + m.key + '">' + qty + '</span>' +
+        '<button class="btn" onclick="changeQty(\'' + m.key + '\', 1)">+</button>' +
+      '</div>' +
+      '<button class="btn btn-action" onclick="buyMaterial(\'' + m.key + '\')"><span id="cost-' + m.key + '">' + (m.price * qty) + '</span>🪙 で購入</button>' +
+    '</div>';
+  }).join('');
+}
+
+function renderLogs() {
+  var container = document.getElementById('log-list');
+  if (!container) return;
+
+  if (state.logs.length === 0) {
+    container.innerHTML = '<div style="text-align:center;padding:10px;color:var(--text-sub)">記録はまだありません</div>';
+    return;
+  }
+
+  container.innerHTML = state.logs.map(function(l) {
+    return '<div class="log-item"><span style="color:var(--cyan)">[' + l.time + ']</span> ' + l.text + '</div>';
+  }).join('');
+}
+
+// 初期化実行
 loadData();
-if (state.logs.length === 0) addLog("冒険と開拓の旅が始まった。");
 renderAll();
 </script>
 </body>
