@@ -112,6 +112,8 @@ input[type="text"],select{background:#15151f;border:1px solid var(--border-color
           <option value="once">単発</option>
           <option value="daily">日課</option>
           <option value="weekly">週課</option>
+          <option value="monthly">月課</option>
+          <option value="yearly">年課</option>
         </select>
       </div>
       <button class="btn btn-primary" onclick="addGoal()" style="width:100%">クエストを受注する</button>
@@ -183,7 +185,6 @@ input[type="text"],select{background:#15151f;border:1px solid var(--border-color
     </div>
   </div>
 </div>
-
 <script>
 var EXP_RATES = {1:10, 3:40, 5:100, 7:220, 10:600};
 var COIN_RATES = {1:5, 3:20, 5:50, 7:110, 10:300};
@@ -431,8 +432,9 @@ function changeQty(key, delta) {
   var elCost = document.getElementById('cost-' + key);
   var m = MATERIALS.find(function(x){ return x.key === key; });
   if (elQty) elQty.textContent = next;
-  if (elCost && m) elCost.textContent = 
-    function buyMaterial(key) {
+  if (elCost && m) elCost.textContent = m.price * next;
+}
+function buyMaterial(key) {
   var mat = MATERIALS.find(function(x) { return x.key === key; });
   if (!mat) return;
   var qty = buyQty[key] || 1;
@@ -469,7 +471,6 @@ function upgradeBuilding(bKey) {
     }
   }
 
-  // 資材消費
   for (var m in req) {
     state.materials[m] -= req[m];
   }
@@ -496,7 +497,8 @@ function showModal(title, body) {
 }
 
 function closeModal() {
-  document.getElementById('modal').style.display = 'none';
+  var m = document.getElementById('modal');
+  if (m) m.style.display = 'none';
 }
 
 function resetAllData() {
@@ -564,7 +566,12 @@ function renderQuests() {
   list.innerHTML = filtered.map(function(g) {
     var cat = state.categories.find(function(c) { return c.id === g.catId; }) || { name: 'その他', icon: '✨', color: '#8c92ac' };
     var doneClass = g.done ? 'completed' : '';
-    var repeatBadge = g.repeat === 'daily' ? ' 🔄日課' : (g.repeat === 'weekly' ? ' 📅週課' : '');
+    
+    var repeatBadge = '';
+    if (g.repeat === 'daily') repeatBadge = ' 🔄日課';
+    else if (g.repeat === 'weekly') repeatBadge = ' 📅週課';
+    else if (g.repeat === 'monthly') repeatBadge = ' 🌙月課';
+    else if (g.repeat === 'yearly') repeatBadge = ' 🎆年課';
 
     return '<li class="quest-item ' + doneClass + '">' +
       '<div class="quest-left" onclick="requestGoalToggle(' + g.id + ')">' +
@@ -573,7 +580,7 @@ function renderQuests() {
         '<span class="badge-lvl">Lv.' + g.level + '</span>' +
         '<span>' + g.text + repeatBadge + '</span>' +
       '</div>' +
-      '<button class="btn-del" onclick="deleteGoal(' + g.id + ')">🗑️</button>' +
+      '<button class="btn-del" onclick="deleteGoal(' + g.id + ')">🗑</button>' +
     '</li>';
   }).join('');
 }
@@ -658,7 +665,6 @@ function renderLogs() {
   }).join('');
 }
 
-// 初期化実行
 loadData();
 renderAll();
 </script>
